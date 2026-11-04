@@ -22,9 +22,14 @@ env:
   CF_PAGES_PROJECT: india-aqi
 
 jobs:
-  update:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+  # api.data.gov.in refuses connections from GitHub-hosted runners, so the
+  # fetch runs on the Raspberry Pi (self-hosted runner, label "pi") and hands
+  # the snapshot to the hosted job below as an artifact.
+  fetch:
+    runs-on: [self-hosted, pi]
+    timeout-minutes: 15
+    outputs:
+      snapshot: ${{ steps.fetch.outputs.snapshot }}
     steps:
       - uses: actions/checkout@v5
 
@@ -35,46 +40,63 @@ jobs:
         # Assign first: `echo "...$(cmd)"` would hide a failing fetch.sh.
         run: |
           snapshot="$(scripts/fetch.sh)"
-          echo "snapshot=$snapshot" >> "$GITHUB_OUTPUT"
+          echo "snapshot=$(basename "$snapshot")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v5
+        if: steps.fetch.outputs.snapshot != ''
+        with:
+          name: snapshot
+          path: json_data/${{ steps.fetch.outputs.snapshot }}
+          retention-days: 1
+
+      # The runner's workspace persists on the Pi; don't let snapshots pile up.
+      - name: Clean up
+        if: always()
+        run: rm -rf json_data
+
+  update:
+    needs: fetch
+    if: needs.fetch.outputs.snapshot != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/download-artifact@v5
+        with:
+          name: snapshot
+          path: json_data
 
       - name: Restore pipeline state
-        if: steps.fetch.outputs.snapshot != ''
         run: scripts/state.sh restore
 
       - name: Archive snapshot
-        if: steps.fetch.outputs.snapshot != ''
-        run: scripts/state.sh save-month "$(basename "${{ steps.fetch.outputs.snapshot }}" | cut -c1-7)"
+        run: scripts/state.sh save-month "$(echo "${{ needs.fetch.outputs.snapshot }}" | cut -c1-7)"
 
       - uses: actions/setup-python@v6
-        if: steps.fetch.outputs.snapshot != ''
         with:
           python-version: "3.13"
 
       - name: Run pipeline
-        if: steps.fetch.outputs.snapshot != ''
         working-directory: dashboard/pipeline
         run: python run_pipeline.py
 
       - name: Save pipeline state
-        if: steps.fetch.outputs.snapshot != ''
         run: scripts/state.sh save-db
 
       - uses: actions/setup-node@v5
-        if: steps.fetch.outputs.snapshot != ''
         with:
           node-version-file: dashboard/.nvmrc
           cache: npm
           cache-dependency-path: dashboard/package-lock.json
 
       - name: Build dashboard
-        if: steps.fetch.outputs.snapshot != ''
         working-directory: dashboard
         run: |
           npm ci
           npm run build
 
       - name: Deploy to Cloudflare Pages
-        if: steps.fetch.outputs.snapshot != ''
         working-directory: dashboard
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -86,11 +108,14 @@ jobs:
           fi
           npx --yes wrangler@4 pages deploy dist --project-name "$CF_PAGES_PROJECT" --branch main --commit-dirty=true
 
-      # GitHub disables scheduled workflows after 60 days without repo
-      # activity; one small commit a day keeps this one alive, even on days
-      # when every fetch fails.
+  # GitHub disables scheduled workflows after 60 days without repo activity;
+  # one small commit a day keeps this one alive, even while the Pi is down.
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
       - name: Heartbeat
-        if: always()
         run: |
           today="$(date +%F)"
           if [[ "$(cat .github/heartbeat 2>/dev/null)" != "$today" ]]; then
