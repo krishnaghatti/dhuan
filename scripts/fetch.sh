@@ -3,8 +3,10 @@
 # named by local time (YYYY-MM-DD_HH-MM-SS.json) like the rest of the archive.
 # Replaces query.sh, reading the key from the environment instead of the script.
 #
-# A failed request or a response with no records is skipped (exit 0, nothing
-# printed) so a flaky API costs one missed reading rather than a failed run.
+# A response with no records (an API-side outage, common in the archive) is
+# skipped (exit 0, nothing printed) so it costs one missed reading rather
+# than a failed run. Not reaching the API at all exits 1, so a blocked or
+# down endpoint shows up as a failed run instead of a silent green one.
 # On success, prints the saved file's path.
 set -euo pipefail
 
@@ -18,10 +20,11 @@ tmp="$(mktemp)"
 trap 'rm -f "$tmp"' EXIT
 
 # -sS keeps curl's error line but never echoes the URL (which holds the key).
-if ! curl -sS --fail --retry 3 --retry-delay 20 --max-time 120 \
+# --retry-all-errors also retries refused connections, which --retry alone skips.
+if ! curl -sS --fail --retry 3 --retry-delay 20 --retry-all-errors --max-time 120 \
     -H "accept: application/json" -o "$tmp" "$URL"; then
-  echo "fetch: request failed; skipping this slot" >&2
-  exit 0
+  echo "fetch: could not get a response from api.data.gov.in" >&2
+  exit 1
 fi
 
 count="$(python3 -c 'import json, sys; print(len(json.load(open(sys.argv[1])).get("records") or []))' "$tmp" 2>/dev/null || echo 0)"
