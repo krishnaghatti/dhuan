@@ -1,0 +1,38 @@
+.legend {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  gap: 0.55rem;
+  list-style: none;
+  margin: 0 0 6rem;
+  padding: 0;
+  font-size: 0.82rem;
+
+  @media (max-width: 640px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+  }
+}
+
+.legend__item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend__swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  flex: none;
+}
+
+.legend__label {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.legend__range {
+  color: var(--text-muted);
+}

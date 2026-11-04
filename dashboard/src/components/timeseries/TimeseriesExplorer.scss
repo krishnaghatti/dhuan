@@ -1,0 +1,43 @@
+.timeseries-explorer {
+  margin-top: 1rem;
+}
+
+.timeseries-explorer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+}
+
+.timeseries-explorer__toggle {
+  display: flex;
+  gap: 0.4rem;
+
+  button {
+    font-size: 0.78rem;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface-1);
+    color: var(--text-secondary);
+    cursor: pointer;
+
+    &.active {
+      background: var(--surface-2);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+  }
+}
+
+.timeseries-explorer__loading {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}

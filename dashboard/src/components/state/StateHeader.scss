@@ -1,0 +1,23 @@
+.state-header {
+  padding: 1rem 1.5rem 0;
+}
+
+.state-header__breadcrumb {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.state-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+}

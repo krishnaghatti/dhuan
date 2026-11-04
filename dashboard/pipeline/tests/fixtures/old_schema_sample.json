@@ -1,0 +1,43 @@
+{
+  "records": [
+    {
+      "country": "India",
+      "state": "Andhra_Pradesh",
+      "city": "Anantapur",
+      "station": "Gulzarpet, Anantapur - APPCB",
+      "last_update": "18-04-2024 22:00:00",
+      "latitude": "14.675886",
+      "longitude": "77.593027",
+      "pollutant_id": "CO",
+      "pollutant_min": "23",
+      "pollutant_max": "100",
+      "pollutant_avg": "38"
+    },
+    {
+      "country": "India",
+      "state": "Andhra_Pradesh",
+      "city": "Chittoor",
+      "station": "Gangineni Cheruvu, Chittoor - APPCB",
+      "last_update": "18-04-2024 22:00:00",
+      "latitude": "13.204880",
+      "longitude": "79.097889",
+      "pollutant_id": "NH3",
+      "pollutant_min": "NA",
+      "pollutant_max": "NA",
+      "pollutant_avg": "NA"
+    },
+    {
+      "country": "India",
+      "state": "TamilNadu",
+      "city": "Ariyalur",
+      "station": "Keelapalur, Ariyalur - TNPCB",
+      "last_update": "19-04-2024 15:00:00",
+      "latitude": "11.06825",
+      "longitude": "79.07033",
+      "pollutant_id": "PM2.5",
+      "pollutant_min": "18",
+      "pollutant_max": "57",
+      "pollutant_avg": "32"
+    }
+  ]
+}

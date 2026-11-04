@@ -1,0 +1,62 @@
+.timeseries {
+  position: relative;
+
+  svg {
+    width: 100%;
+    display: block;
+  }
+}
+
+.timeseries__xtick {
+  line {
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+
+  text {
+    fill: var(--text-muted);
+    font-size: 0.65rem;
+  }
+}
+
+.timeseries__line {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.timeseries__band {
+  line {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+  }
+
+  text {
+    fill: var(--text-muted);
+    font-size: 0.65rem;
+  }
+}
+
+.timeseries__crosshair {
+  stroke: var(--text-muted);
+  stroke-width: 1;
+}
+
+.timeseries__dot {
+  fill: var(--text-primary);
+}
+
+.timeseries__tooltip {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+}

@@ -1,0 +1,62 @@
+// Design tokens. Level colors are duplicated from components/common/Level.ts
+// (CSS can't import a TS module's values) -- keep the two in lockstep by hand.
+:root {
+  color-scheme: light;
+  --surface-1: #fcfcfb;
+  --surface-2: #f2f1ee;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #86847d;
+  --border: #dedcd6;
+
+  --level-good: #1a9850;
+  --level-satisfactory: #66bd63;
+  --level-moderate: #d99a1a;
+  --level-poor: #e8601c;
+  --level-very_poor: #c21807;
+  --level-severe: #9c1030;
+  --level-no-data: #c9c8c2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-1: #1a1a19;
+    --surface-2: #242422;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #8a887f;
+    --border: #3a3a37;
+
+    --level-good: #007a34;
+    --level-satisfactory: #318a31;
+    --level-moderate: #b57800;
+    --level-poor: #d54e00;
+    --level-very_poor: #c92313;
+    --level-severe: #af283f;
+    --level-no-data: #4a4a47;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-1: #1a1a19;
+  --surface-2: #242422;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #8a887f;
+  --border: #3a3a37;
+
+  --level-good: #007a34;
+  --level-satisfactory: #318a31;
+  --level-moderate: #b57800;
+  --level-poor: #d54e00;
+  --level-very_poor: #c92313;
+  --level-severe: #af283f;
+  --level-no-data: #4a4a47;
+}
+
+body {
+  background: var(--surface-1);
+  color: var(--text-primary);
+}

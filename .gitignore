@@ -1,0 +1,17 @@
+# Raw snapshots live in the "data" GitHub Release, not git (scripts/state.sh)
+json_data/
+json_data_bkp/
+
+# Old fetch script with the API key hardcoded; replaced by scripts/fetch.sh
+query.sh
+
+# Pipeline output and state, regenerated/restored on every run
+dashboard/public/data/
+dashboard/pipeline/.cache/
+dashboard/pipeline/.venv/
+dashboard/pipeline/logs/
+
+__pycache__/
+.pytest_cache/
+.vite/
+.DS_Store

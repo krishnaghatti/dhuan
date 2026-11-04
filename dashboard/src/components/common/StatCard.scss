@@ -1,0 +1,45 @@
+.stat-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  min-width: 9rem;
+}
+
+.stat-card__label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.stat-card__value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin-top: 0.3rem;
+}
+
+.stat-card__swatch {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  flex: none;
+}
+
+.stat-card__aqi {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-card__level {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.stat-card__sublabel {
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}

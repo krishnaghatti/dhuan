@@ -1,0 +1,25 @@
+.timeseries-brush {
+  width: 100%;
+  display: block;
+  margin-top: 1.25rem;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.timeseries-brush__line {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 1.5;
+}
+
+.timeseries-brush__window {
+  fill: var(--text-primary);
+  opacity: 0.12;
+  stroke: var(--text-primary);
+  stroke-width: 1;
+}
+
+.timeseries-brush__tick {
+  fill: var(--text-muted);
+  font-size: 0.65rem;
+}

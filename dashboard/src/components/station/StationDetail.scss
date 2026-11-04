@@ -1,0 +1,29 @@
+.station-detail {
+  padding: 1rem 1.5rem 0;
+}
+
+.station-detail__breadcrumb {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.station-detail__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+
+  h1 {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+}
+
+.station-detail__coords {
+  margin: 0.2rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}

@@ -1,0 +1,43 @@
+{
+  "records": [
+    {
+      "country": "India",
+      "state": "Bihar",
+      "city": "Sasaram",
+      "station": "Dada Peer, Sasaram - BSPCB",
+      "last_update": "20-07-2026 19:00:00",
+      "latitude": "24.952822",
+      "longitude": "84.002396",
+      "pollutant_id": "SO2",
+      "min_value": "0",
+      "max_value": "5",
+      "avg_value": "3"
+    },
+    {
+      "country": "India",
+      "state": "Tamil Nadu",
+      "city": "Chennai",
+      "station": "Manali Village, Chennai - TNPCB",
+      "last_update": "20-07-2026 19:00:00",
+      "latitude": "13.1662",
+      "longitude": "80.2584",
+      "pollutant_id": "CO",
+      "min_value": "500",
+      "max_value": "3000",
+      "avg_value": "2000"
+    },
+    {
+      "country": "India",
+      "state": "Andhra Pradesh",
+      "city": "Vijayawada",
+      "station": "PWD Grounds, Vijayawada - APPCB",
+      "last_update": "20-07-2026 19:00:00",
+      "latitude": "16.5062",
+      "longitude": "80.6480",
+      "pollutant_id": "PM10",
+      "min_value": "NA",
+      "max_value": "NA",
+      "avg_value": "NA"
+    }
+  ]
+}

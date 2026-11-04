@@ -1,0 +1,99 @@
+# Every 2 hours: fetch one AQI snapshot, archive it, fold it into the
+# pipeline, rebuild the dashboard and deploy it to Cloudflare Pages.
+# State between runs lives in the "data" release (see scripts/state.sh).
+name: Update AQI data
+
+on:
+  schedule:
+    # :38 UTC on even hours = :08 IST on even hours, the old Pi cron slot.
+    - cron: "38 */2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-aqi
+  cancel-in-progress: false
+
+env:
+  TZ: Asia/Kolkata
+  GH_TOKEN: ${{ github.token }}
+  CF_PAGES_PROJECT: india-aqi
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch snapshot
+        id: fetch
+        env:
+          DATA_GOV_API_KEY: ${{ secrets.DATA_GOV_API_KEY }}
+        run: echo "snapshot=$(scripts/fetch.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore pipeline state
+        if: steps.fetch.outputs.snapshot != ''
+        run: scripts/state.sh restore
+
+      - name: Archive snapshot
+        if: steps.fetch.outputs.snapshot != ''
+        run: scripts/state.sh save-month "$(basename "${{ steps.fetch.outputs.snapshot }}" | cut -c1-7)"
+
+      - uses: actions/setup-python@v5
+        if: steps.fetch.outputs.snapshot != ''
+        with:
+          python-version: "3.13"
+
+      - name: Run pipeline
+        if: steps.fetch.outputs.snapshot != ''
+        working-directory: dashboard/pipeline
+        run: python run_pipeline.py
+
+      - name: Save pipeline state
+        if: steps.fetch.outputs.snapshot != ''
+        run: scripts/state.sh save-db
+
+      - uses: actions/setup-node@v4
+        if: steps.fetch.outputs.snapshot != ''
+        with:
+          node-version-file: dashboard/.nvmrc
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Build dashboard
+        if: steps.fetch.outputs.snapshot != ''
+        working-directory: dashboard
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy to Cloudflare Pages
+        if: steps.fetch.outputs.snapshot != ''
+        working-directory: dashboard
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # First run only: create the Pages project if it doesn't exist yet.
+          if ! npx --yes wrangler@4 pages project list | grep -qw "$CF_PAGES_PROJECT"; then
+            npx --yes wrangler@4 pages project create "$CF_PAGES_PROJECT" --production-branch main
+          fi
+          npx --yes wrangler@4 pages deploy dist --project-name "$CF_PAGES_PROJECT" --branch main --commit-dirty=true
+
+      # GitHub disables scheduled workflows after 60 days without repo
+      # activity; one small commit a day keeps this one alive.
+      - name: Heartbeat
+        run: |
+          today="$(date +%F)"
+          if [[ "$(cat .github/heartbeat 2>/dev/null)" != "$today" ]]; then
+            echo "$today" > .github/heartbeat
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .github/heartbeat
+            git commit -m "heartbeat $today"
+            git pull --rebase
+            git push
+          fi

@@ -1,0 +1,19 @@
+.map-visualizer {
+  width: 100%;
+  height: auto;
+  max-height: 88vh;
+}
+
+.map-visualizer__state {
+  fill: var(--surface-2);
+}
+
+.city-markers__marker circle {
+  transition: stroke-width 0.15s ease, opacity 0.15s ease;
+  opacity: 0.85;
+}
+
+.city-markers__marker:hover circle {
+  opacity: 1;
+  stroke-width: 2.5;
+}
